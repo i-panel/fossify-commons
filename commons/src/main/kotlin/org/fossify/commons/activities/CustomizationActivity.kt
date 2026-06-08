@@ -757,7 +757,7 @@ class CustomizationActivity : BaseSimpleActivity() {
     }
 
     private fun pickPrimaryColor() {
-        if (!packageName.startsWith("org.fossify.", true) && baseConfig.appRunCount > 50) {
+        if (!packageName.startsWith("org.carku.", true) && baseConfig.appRunCount > 50) {
             finish()
             return
         }

@@ -193,7 +193,7 @@ abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
         WindowCompat.enableEdgeToEdge(window)
         registerBackPressedCallback()
 
-        if (!packageName.startsWith("org.fossify.", true)) {
+        if (!packageName.startsWith("org.carku.", true)) {
             if ((0..50).random() == 10 || baseConfig.appRunCount % 100 == 0) {
                 showModdedAppWarning()
             }
@@ -643,7 +643,7 @@ abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
     }
 
     fun startCustomizationActivity() {
-        if (!packageName.contains("yfissof".reversed(), true)) {
+        if (!packageName.contains("ukrac".reversed(), true)) {
             if (baseConfig.appRunCount > 100) {
                 showModdedAppWarning()
                 return
@@ -679,7 +679,7 @@ abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
     // synchronous return value determines only if we are showing the SAF dialog, callback result tells if the SD or OTG permission has been granted
     fun handleSAFDialog(path: String, callback: (success: Boolean) -> Unit): Boolean {
         hideKeyboard()
-        return if (!packageName.startsWith("org.fossify")) {
+        return if (!packageName.startsWith("org.carku")) {
             callback(true)
             false
         } else if (isShowingSAFDialog(path) || isShowingOTGDialog(path)) {
@@ -697,7 +697,7 @@ abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
         callback: (success: Boolean) -> Unit
     ): Boolean {
         hideKeyboard()
-        return if (!packageName.startsWith("org.fossify")) {
+        return if (!packageName.startsWith("org.carku")) {
             callback(true)
             false
         } else if (isShowingSAFDialogSdk30(path, showRationale)) {
@@ -727,7 +727,7 @@ abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
         callback: (success: Boolean) -> Unit
     ): Boolean {
         hideKeyboard()
-        return if (!packageName.startsWith("org.fossify")) {
+        return if (!packageName.startsWith("org.carku")) {
             callback(true)
             false
         } else if (isShowingSAFCreateDocumentDialogSdk30(path)) {
@@ -745,7 +745,7 @@ abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
         callback: (success: Boolean) -> Unit
     ): Boolean {
         hideKeyboard()
-        return if (!packageName.startsWith("org.fossify")) {
+        return if (!packageName.startsWith("org.carku")) {
             callback(true)
             false
         } else if (isShowingAndroidSAFDialog(path, openInSystemAppAllowed)) {

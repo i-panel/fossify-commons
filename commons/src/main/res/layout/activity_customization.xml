@@ -208,14 +208,16 @@
 
             <include
                 android:id="@+id/font_divider"
-                layout="@layout/divider" />
+                layout="@layout/divider"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/settings_font_label"
                 style="@style/SettingsSectionLabelStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/font" />
+                android:text="@string/font"
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/customization_font_holder"
@@ -224,7 +226,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:paddingTop="@dimen/bigger_margin"
-                android:paddingBottom="@dimen/bigger_margin">
+                android:paddingBottom="@dimen/bigger_margin"
+                android:visibility="gone">
 
                 <org.fossify.commons.views.MyTextView
                     android:id="@+id/customization_font_label"
