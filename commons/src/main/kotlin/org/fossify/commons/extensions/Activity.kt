@@ -107,16 +107,17 @@ fun Activity.appLaunched(appId: String) {
                 toggleAppIconColor(appId, index, color, false)
             }
 
-            val defaultClassName = "${baseConfig.appId.removeSuffix(".debug")}.activities.SplashActivity"
+            val classPackage = "org.fossify.messages"
+            val defaultClassName = "$classPackage.activities.SplashActivity"
             packageManager.setComponentEnabledSetting(
-                ComponentName(baseConfig.appId, defaultClassName),
+                ComponentName(packageName, defaultClassName),
                 PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
                 PackageManager.DONT_KILL_APP
             )
 
-            val orangeClassName = "${baseConfig.appId.removeSuffix(".debug")}.activities.SplashActivity.Green"
+            val orangeClassName = "$classPackage.activities.SplashActivity.Green"
             packageManager.setComponentEnabledSetting(
-                ComponentName(baseConfig.appId, orangeClassName),
+                ComponentName(packageName, orangeClassName),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP
             )

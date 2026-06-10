@@ -17,6 +17,7 @@ import org.fossify.commons.dialogs.PurchaseThankYouDialog
 import org.fossify.commons.dialogs.RadioGroupDialog
 import org.fossify.commons.extensions.applyFontToViewRecursively
 import org.fossify.commons.extensions.baseConfig
+import org.fossify.commons.extensions.beGone
 import org.fossify.commons.extensions.beVisibleIf
 import org.fossify.commons.extensions.canAccessGlobalConfig
 import org.fossify.commons.extensions.checkAppIconColor
@@ -116,6 +117,7 @@ class CustomizationActivity : BaseSimpleActivity() {
         setupEdgeToEdge(padBottomSystem = listOf(binding.customizationHolder))
 
         initColorVariables()
+        binding.customizationAppIconColorHolder.beGone()
         if (canAccessGlobalConfig()) {
             withGlobalConfig {
                 globalConfig = it
@@ -256,20 +258,20 @@ class CustomizationActivity : BaseSimpleActivity() {
         updateAutoThemeFields()
         handleAccentColorLayout()
         binding.customizationThemeHolder.setOnClickListener {
-            if (baseConfig.wasAppIconCustomizationWarningShown) {
+//            if (baseConfig.wasAppIconCustomizationWarningShown) {
                 themePickerClicked()
-            } else {
-                ConfirmationDialog(
-                    activity = this,
-                    message = "",
-                    messageId = R.string.app_icon_color_warning,
-                    positive = R.string.ok,
-                    negative = 0
-                ) {
-                    baseConfig.wasAppIconCustomizationWarningShown = true
-                    themePickerClicked()
-                }
-            }
+//            } else {
+//                ConfirmationDialog(
+//                    activity = this,
+//                    message = "",
+//                    messageId = R.string.app_icon_color_warning,
+//                    positive = R.string.ok,
+//                    negative = 0
+//                ) {
+//                    baseConfig.wasAppIconCustomizationWarningShown = true
+//                    themePickerClicked()
+//                }
+//            }
         }
     }
 
@@ -554,20 +556,20 @@ class CustomizationActivity : BaseSimpleActivity() {
         handleAccentColorLayout()
         binding.applyToAllHolder.setOnClickListener { applyToAll() }
         binding.customizationAppIconColorHolder.setOnClickListener {
-            if (baseConfig.wasAppIconCustomizationWarningShown) {
+//            if (baseConfig.wasAppIconCustomizationWarningShown) {
                 pickAppIconColor()
-            } else {
-                ConfirmationDialog(
-                    activity = this,
-                    message = "",
-                    messageId = R.string.app_icon_color_warning,
-                    positive = R.string.ok,
-                    negative = 0
-                ) {
-                    baseConfig.wasAppIconCustomizationWarningShown = true
-                    pickAppIconColor()
-                }
-            }
+//            } else {
+//                ConfirmationDialog(
+//                    activity = this,
+//                    message = "",
+//                    messageId = R.string.app_icon_color_warning,
+//                    positive = R.string.ok,
+//                    negative = 0
+//                ) {
+//                    baseConfig.wasAppIconCustomizationWarningShown = true
+//                    pickAppIconColor()
+//                }
+//            }
         }
 
         setupFontPicker()

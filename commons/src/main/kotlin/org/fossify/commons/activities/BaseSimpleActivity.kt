@@ -8,12 +8,14 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.Settings
@@ -134,6 +136,7 @@ import org.fossify.commons.models.FileDirItem
 import org.fossify.commons.views.MyAppBarLayout
 import java.io.File
 import java.io.OutputStream
+import java.util.Locale
 import java.util.regex.Pattern
 
 abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
@@ -254,11 +257,36 @@ abstract class BaseSimpleActivity : EdgeToEdgeActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        if (newBase.baseConfig.useEnglish && !isTiramisuPlus()) {
-            super.attachBaseContext(MyContextWrapper(newBase).wrap(newBase, "en"))
-        } else {
-            super.attachBaseContext(newBase)
+        val config = newBase.baseConfig
+        val systemLocale = Resources.getSystem().configuration.locales[0]
+        val supportedLanguages = setOf(
+            "ar", "az", "be", "bg", "bn", "br", "bs", "ca", "cr", "cs", "cy", "da", "de", "el", "eo", "es", "et", "eu",
+            "fa", "fi", "fr", "ga", "gl", "gu", "hi", "hr", "hu", "ia", "in", "is", "it", "iw", "ja", "kn", "ko", "kr",
+            "lt", "lv", "mk", "ml", "ms", "my", "ne", "nl", "nn", "or", "pa", "pl", "pt", "ro", "ru", "si", "sk", "sl",
+            "sr", "sv", "ta", "te", "th", "tr", "uk", "vi", "bqi", "ckb", "fil", "kab", "ltg", "sat", "zgh"
+        )
+
+        val locale = when {
+            config.useEnglish -> Locale.ENGLISH
+            supportedLanguages.contains(systemLocale.language) -> {
+                if (systemLocale.language == "en") {
+                    Locale.forLanguageTag("fa")
+                } else {
+                    null // Let system handle supported languages (de, fr, fa, etc.)
+                }
+            }
+            else -> Locale.forLanguageTag("fa") // Fallback for unsupported languages (Swahili, etc.)
         }
+
+        val context = if (locale != null && !isTiramisuPlus()) {
+            Locale.setDefault(locale)
+            val configuration = Configuration(newBase.resources.configuration)
+            configuration.setLocales(LocaleList(locale))
+            newBase.createConfigurationContext(configuration)
+        } else {
+            newBase
+        }
+        super.attachBaseContext(context)
     }
 
     fun registerBackPressedCallback() {
