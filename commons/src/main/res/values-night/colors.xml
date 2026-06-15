@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="you_status_bar_color">@color/theme_dark_background_color</color>
+    <color name="you_contextual_status_bar_color">@color/color_primary</color>
+    <color name="you_background_color">@color/theme_dark_background_color</color>
+    <color name="you_bottom_bar_color">@color/theme_dark_background_color</color>
+    <color name="you_neutral_text_color">@color/theme_dark_text_color</color>
+    <color name="you_primary_color">@color/color_primary</color>
+    <color name="you_primary_dark_color">@color/color_primary_dark</color>
+    <color name="you_dialog_background_color">@color/theme_dark_background_color</color>
+    <color name="you_surface_color">@color/theme_dark_background_color</color>
+    <color name="you_selected_item_background_color">@color/color_primary</color>
+    <color name="you_ripple_color">#33FFFFFF</color>
+</resources>

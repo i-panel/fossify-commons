@@ -37,7 +37,7 @@ import org.fossify.commons.views.MyTextInputLayout
 import org.fossify.commons.views.MyTextView
 import java.io.File
 
-fun Context.isDynamicTheme() = isSPlus() && baseConfig.isSystemThemeEnabled
+fun Context.isDynamicTheme() = baseConfig.isSystemThemeEnabled
 
 fun Context.isBlackAndWhiteTheme(): Boolean {
     return baseConfig.textColor == Color.WHITE
