@@ -163,6 +163,7 @@
     <string name="bottom_navigation_bar_color">رنگ نوار پیمایش پایین</string>
     <string name="restore_defaults">بازیابی پیش‌گزیده‌ها</string>
     <string name="use_default">استفاده از پیش‌گزیده</string>
+    <string name="use_solar_hijri_date">نمایش تاریخ به صورت شمسی</string>
     <string name="default_color">پیش‌گزیده</string>
     <string name="change_color">تغییر رنگ</string>
     <string name="theme">شِما</string>

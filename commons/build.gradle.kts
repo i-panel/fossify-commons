@@ -115,6 +115,7 @@ dependencies {
     debugImplementation(libs.bundles.compose.preview)
 
     api(libs.joda.time)
+    api(libs.persian.date)
     api(libs.recyclerView.fastScroller)
     api(libs.reprint)
     api(libs.rtl.viewpager)

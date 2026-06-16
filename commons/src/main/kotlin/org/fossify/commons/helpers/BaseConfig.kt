@@ -308,6 +308,10 @@ open class BaseConfig(val context: Context) {
         get() = prefs.getBoolean(USE_24_HOUR_FORMAT, DateFormat.is24HourFormat(context))
         set(use24HourFormat) = prefs.edit().putBoolean(USE_24_HOUR_FORMAT, use24HourFormat).apply()
 
+    var useSolarHijri: Boolean
+        get() = prefs.getBoolean(USE_SOLAR_HIJRI, false)
+        set(useSolarHijri) = prefs.edit().putBoolean(USE_SOLAR_HIJRI, useSolarHijri).apply()
+
     var isSundayFirst: Boolean
         get() {
             val isSundayFirst = Calendar.getInstance(Locale.getDefault()).firstDayOfWeek == Calendar.SUNDAY

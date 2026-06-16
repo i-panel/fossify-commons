@@ -7,6 +7,7 @@ import android.text.format.Time
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Locale
+import org.fossify.commons.helpers.JalaliCalendarHelper
 import kotlin.math.log10
 import kotlin.math.pow
 
@@ -21,6 +22,13 @@ fun Long.formatSize(): String {
 fun Long.formatDate(context: Context, dateFormat: String? = null, timeFormat: String? = null): String {
     val useDateFormat = dateFormat ?: context.baseConfig.dateFormat
     val useTimeFormat = timeFormat ?: context.getTimeFormat()
+    if (context.baseConfig.useSolarHijri) {
+        val cal = Calendar.getInstance(Locale.ENGLISH)
+        cal.timeInMillis = this
+        val time = DateFormat.format(useTimeFormat, cal).toString()
+        val persianTime = JalaliCalendarHelper.toPersianDigits(time)
+        return "${JalaliCalendarHelper.formatJalali(this, useDateFormat)}, $persianTime"
+    }
     val cal = Calendar.getInstance(Locale.ENGLISH)
     cal.timeInMillis = this
     return DateFormat.format("$useDateFormat, $useTimeFormat", cal).toString()
@@ -29,7 +37,8 @@ fun Long.formatDate(context: Context, dateFormat: String? = null, timeFormat: St
 fun Long.formatTime(context: Context): String {
     val cal = Calendar.getInstance(Locale.ENGLISH)
     cal.timeInMillis = this
-    return DateFormat.format(context.getTimeFormat(), cal).toString()
+    val time = DateFormat.format(context.getTimeFormat(), cal).toString()
+    return if (context.baseConfig.useSolarHijri) JalaliCalendarHelper.toPersianDigits(time) else time
 }
 
 fun Long.formatDateOrTime(
@@ -42,18 +51,28 @@ fun Long.formatDateOrTime(
     cal.timeInMillis = this
 
     return if (hideTodaysDate && DateUtils.isToday(this)) {
-        DateFormat.format(context.getTimeFormat(), cal).toString()
+        this.formatTime(context)
     } else {
         var format = context.baseConfig.dateFormat
-        if (!showCurrentYear && isThisYear()) {
+        val isSolar = context.baseConfig.useSolarHijri
+        val isThisYear = if (isSolar) JalaliCalendarHelper.isThisSolarYear(this) else isThisYear()
+        if (!showCurrentYear && isThisYear) {
             format = format.replace("y", "").trim().trim('-').trim('.').trim('/')
         }
 
-        if (!hideTimeOnOtherDays) {
-            format += ", ${context.getTimeFormat()}"
-        }
+        if (isSolar) {
+            var formatted = JalaliCalendarHelper.formatJalali(this, format)
+            if (!hideTimeOnOtherDays) {
+                formatted += ", ${this.formatTime(context)}"
+            }
+            formatted
+        } else {
+            if (!hideTimeOnOtherDays) {
+                format += ", ${context.getTimeFormat()}"
+            }
 
-        DateFormat.format(format, cal).toString()
+            DateFormat.format(format, cal).toString()
+        }
     }
 }
 

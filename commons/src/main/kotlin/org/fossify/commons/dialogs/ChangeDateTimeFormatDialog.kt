@@ -54,6 +54,10 @@ class ChangeDateTimeFormatDialog(val activity: Activity, val callback: () -> Uni
             changeDateTimeDialogRadioEight.text = formatDateSample(DATE_FORMAT_EIGHT)
 
             changeDateTimeDialog24Hour.isChecked = activity.baseConfig.use24HourFormat
+            changeDateTimeDialogSolarHijri.isChecked = activity.baseConfig.useSolarHijri
+            changeDateTimeDialogSolarHijri.setOnCheckedChangeListener { compoundButton, isChecked ->
+                updateSamples(isChecked)
+            }
 
             val formatButton = when (activity.baseConfig.dateFormat) {
                 DATE_FORMAT_ONE -> changeDateTimeDialogRadioOne
@@ -89,10 +93,27 @@ class ChangeDateTimeFormatDialog(val activity: Activity, val callback: () -> Uni
         }
 
         activity.baseConfig.use24HourFormat = view.changeDateTimeDialog24Hour.isChecked
+        activity.baseConfig.useSolarHijri = view.changeDateTimeDialogSolarHijri.isChecked
         callback()
     }
 
-    private fun formatDateSample(format: String): String {
+    private fun updateSamples(useSolarHijri: Boolean) {
+        view.apply {
+            changeDateTimeDialogRadioOne.text = formatDateSample(DATE_FORMAT_ONE, useSolarHijri)
+            changeDateTimeDialogRadioTwo.text = formatDateSample(DATE_FORMAT_TWO, useSolarHijri)
+            changeDateTimeDialogRadioThree.text = formatDateSample(DATE_FORMAT_THREE, useSolarHijri)
+            changeDateTimeDialogRadioFour.text = formatDateSample(DATE_FORMAT_FOUR, useSolarHijri)
+            changeDateTimeDialogRadioFive.text = formatDateSample(DATE_FORMAT_FIVE, useSolarHijri)
+            changeDateTimeDialogRadioSix.text = formatDateSample(DATE_FORMAT_SIX, useSolarHijri)
+            changeDateTimeDialogRadioSeven.text = formatDateSample(DATE_FORMAT_SEVEN, useSolarHijri)
+            changeDateTimeDialogRadioEight.text = formatDateSample(DATE_FORMAT_EIGHT, useSolarHijri)
+        }
+    }
+
+    private fun formatDateSample(format: String, useSolarHijri: Boolean = activity.baseConfig.useSolarHijri): String {
+        if (useSolarHijri) {
+            return JalaliCalendarHelper.formatJalali(timeSample, format)
+        }
         val cal = Calendar.getInstance(Locale.ENGLISH)
         cal.timeInMillis = timeSample
         return DateFormat.format(format, cal).toString()
@@ -104,33 +125,36 @@ class ChangeDateTimeFormatDialog(val activity: Activity, val callback: () -> Uni
 fun ChangeDateTimeFormatAlertDialog(
     alertDialogState: AlertDialogState,
     is24HourChecked: Boolean,
+    isSolarHijriChecked: Boolean,
     modifier: Modifier = Modifier,
-    callback: (selectedFormat: String, is24HourChecked: Boolean) -> Unit
+    callback: (selectedFormat: String, is24HourChecked: Boolean, isSolarHijriChecked: Boolean) -> Unit
 ) {
     val context = LocalContext.current
-    val selections = remember {
+    var is24HoursSelected by remember { mutableStateOf(is24HourChecked) }
+    var isSolarHijriSelected by remember { mutableStateOf(isSolarHijriChecked) }
+
+    val selections = remember(isSolarHijriSelected) {
         mapOf(
-            Pair(DATE_FORMAT_ONE, formatDateSample(DATE_FORMAT_ONE)),
-            Pair(DATE_FORMAT_TWO, formatDateSample(DATE_FORMAT_TWO)),
-            Pair(DATE_FORMAT_THREE, formatDateSample(DATE_FORMAT_THREE)),
-            Pair(DATE_FORMAT_FOUR, formatDateSample(DATE_FORMAT_FOUR)),
-            Pair(DATE_FORMAT_FIVE, formatDateSample(DATE_FORMAT_FIVE)),
-            Pair(DATE_FORMAT_SIX, formatDateSample(DATE_FORMAT_SIX)),
-            Pair(DATE_FORMAT_SEVEN, formatDateSample(DATE_FORMAT_SEVEN)),
-            Pair(DATE_FORMAT_EIGHT, formatDateSample(DATE_FORMAT_EIGHT)),
+            Pair(DATE_FORMAT_ONE, formatDateSample(DATE_FORMAT_ONE, isSolarHijriSelected)),
+            Pair(DATE_FORMAT_TWO, formatDateSample(DATE_FORMAT_TWO, isSolarHijriSelected)),
+            Pair(DATE_FORMAT_THREE, formatDateSample(DATE_FORMAT_THREE, isSolarHijriSelected)),
+            Pair(DATE_FORMAT_FOUR, formatDateSample(DATE_FORMAT_FOUR, isSolarHijriSelected)),
+            Pair(DATE_FORMAT_FIVE, formatDateSample(DATE_FORMAT_FIVE, isSolarHijriSelected)),
+            Pair(DATE_FORMAT_SIX, formatDateSample(DATE_FORMAT_SIX, isSolarHijriSelected)),
+            Pair(DATE_FORMAT_SEVEN, formatDateSample(DATE_FORMAT_SEVEN, isSolarHijriSelected)),
+            Pair(DATE_FORMAT_EIGHT, formatDateSample(DATE_FORMAT_EIGHT, isSolarHijriSelected)),
         )
     }
-    val kinds = remember {
+    val kinds = remember(isSolarHijriSelected) {
         selections.values.toImmutableList()
     }
+
     val initiallySelected = remember {
-        requireNotNull(selections[context.baseConfig.dateFormat]) {
+        requireNotNull(selections.filterKeys { it == context.baseConfig.dateFormat }.values.firstOrNull()) {
             "Incorrect format, please check selections"
         }
     }
     val (selected, setSelected) = remember { mutableStateOf(initiallySelected) }
-
-    var is24HoursSelected by remember { mutableStateOf(is24HourChecked) }
 
     BasicAlertDialog(onDismissRequest = alertDialogState::hide) {
         DialogSurface {
@@ -156,6 +180,13 @@ fun ChangeDateTimeFormatAlertDialog(
                             onChange = { is24HoursSelected = it },
                             modifier = Modifier.padding(horizontal = SimpleTheme.dimens.padding.medium)
                         )
+
+                        DialogCheckBoxWithRadioAlignmentComponent(
+                            label = stringResource(id = R.string.use_solar_hijri_date),
+                            initialValue = isSolarHijriSelected,
+                            onChange = { isSolarHijriSelected = it },
+                            modifier = Modifier.padding(horizontal = SimpleTheme.dimens.padding.medium)
+                        )
                     }
                 }
 
@@ -179,7 +210,7 @@ fun ChangeDateTimeFormatAlertDialog(
 
                     TextButton(onClick = {
                         alertDialogState.hide()
-                        callback(selections.filterValues { it == selected }.keys.first(), is24HoursSelected)
+                        callback(selections.filterValues { it == selected }.keys.first(), is24HoursSelected, isSolarHijriSelected)
                     }) {
                         Text(text = stringResource(id = R.string.ok))
                     }
@@ -191,7 +222,10 @@ fun ChangeDateTimeFormatAlertDialog(
 
 
 private const val timeSample = 1676419200000    // February 15, 2023
-private fun formatDateSample(format: String): String {
+private fun formatDateSample(format: String, useSolarHijri: Boolean): String {
+    if (useSolarHijri) {
+        return JalaliCalendarHelper.formatJalali(timeSample, format)
+    }
     val cal = Calendar.getInstance(Locale.ENGLISH)
     cal.timeInMillis = timeSample
     return DateFormat.format(format, cal).toString()
@@ -254,6 +288,10 @@ internal fun DialogCheckBoxWithRadioAlignmentComponent(
 @MyDevices
 private fun ChangeDateTimeFormatAlertDialogPreview() {
     AppThemeSurface {
-        ChangeDateTimeFormatAlertDialog(alertDialogState = rememberAlertDialogState(), is24HourChecked = true) { _, _ -> }
+        ChangeDateTimeFormatAlertDialog(
+            alertDialogState = rememberAlertDialogState(),
+            is24HourChecked = true,
+            isSolarHijriChecked = false
+        ) { _, _, _ -> }
     }
 }

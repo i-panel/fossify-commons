@@ -253,9 +253,14 @@ class TestDialogActivity : ComponentActivity() {
     @Composable
     private fun getChangeDateTimeFormatAlertDialogState() = rememberAlertDialogState().apply {
         DialogMember {
-            ChangeDateTimeFormatAlertDialog(this, is24HourChecked = baseConfig.use24HourFormat) { selectedFormat, is24HourChecked ->
+            ChangeDateTimeFormatAlertDialog(
+                this,
+                is24HourChecked = baseConfig.use24HourFormat,
+                isSolarHijriChecked = baseConfig.useSolarHijri
+            ) { selectedFormat, is24HourChecked, isSolarHijriChecked ->
                 baseConfig.dateFormat = selectedFormat
                 baseConfig.use24HourFormat = is24HourChecked
+                baseConfig.useSolarHijri = isSolarHijriChecked
             }
         }
     }
